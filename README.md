@@ -31,7 +31,7 @@ A simulação é exibida em tempo real em uma janela, com a leitura numérica e 
 
 Paralelamente à GUI, o simulador gera logs no console, detalhando o estado da rede a cada ciclo. Isso é útil para depuração e para o uso do simulador em sistemas que não necessitam da interface visual.
 
-```console
+```console![Exemplo do console](docs/images/gui_exemplo.png)
 Simulador iniciado. Pressione Ctrl+C para parar.
 Leitura: 8.32 m³ | Vazão: 19.85 m³/h | Pressão: 2.1 bar | Status: NORMAL
 Leitura: 8.33 m³ | Vazão: 20.15 m³/h | Pressão: 2.2 bar | Status: NORMAL
