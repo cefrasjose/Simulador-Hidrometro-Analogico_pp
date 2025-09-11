@@ -26,7 +26,7 @@ O simulador carrega configurações de um arquivo de propriedades, opera de form
 A simulação é exibida em tempo real em uma janela, com a leitura numérica e os ponteiros animados para litros, vazão e pressão.
 
 <p align="center">
-  <img src="docs/images/gui_exemplo.png" alt="gui_exemplo" width="300"/>
+  <img src="docs/images/gui_exemplo.png" alt="gui_exemplo" width="500"/>
 </p>
 
 ### Saída do Console
@@ -34,9 +34,8 @@ A simulação é exibida em tempo real em uma janela, com a leitura numérica e 
 Paralelamente à GUI, o simulador gera logs no console, detalhando o estado da rede a cada ciclo. Isso é útil para depuração e para o uso do simulador em sistemas que não necessitam da interface visual.
 
 <p align="center">
-  <img src="docs/images/console_output.png" alt="console_output" width="300"/>
+  <img src="docs/images/console_output.png" alt="console_output" width="500"/>
 </p>
----
 
 ## 🛠️ Tecnologias Utilizadas
 
