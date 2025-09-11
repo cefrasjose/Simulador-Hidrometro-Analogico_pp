@@ -7,21 +7,23 @@ import br.com.hidrometro.view.Display;
 import br.com.hidrometro.view.HidrometroGUI;
 
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 
 public class Simulador {
     private final Configuracao config;
     private final RedeHidraulica rede;
     private final Hidrometro hidrometro;
-    private final Display display;
+    private final Display displayCaptura; //Renomeado para evitar confusão
     private volatile boolean rodando = false;
     private Thread threadSimulacao;
     private HidrometroGUI tela;
 
     public Simulador() {
+        //Caminho do arquivo .properties ajustado para ser lido de resources
         this.config = new Configuracao("config/parametros.properties");
         this.rede = new RedeHidraulica(config);
         this.hidrometro = new Hidrometro();
-        this.display = new Display(config);
+        this.displayCaptura = new Display(config); //Classe Display agora captura a GUI
     }
 
     public void iniciar() {
@@ -39,7 +41,14 @@ public class Simulador {
     public void parar() {
         rodando = false;
         try {
-            threadSimulacao.join(); // Espera a thread terminar
+            if (threadSimulacao != null) { //Adicionado verificação para evitar NullPointerException
+                threadSimulacao.join();
+            }
+            SwingUtilities.invokeLater(() -> { //Garante que a GUI seja fechada na EDT
+                if (tela != null) { //Adicionado verificação
+                    tela.dispose();
+                }
+            });
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -51,25 +60,34 @@ public class Simulador {
         double fatorAr = config.getDouble("fator.consumo.com.ar");
 
         while (rodando) {
-            //1.Atualiza o estado da rede (vazão, ar, falta de água)
             rede.atualizarEstado();
-
-            //2.Registra o consumo no hidrômetro
             hidrometro.registrarConsumo(rede.getVazaoAtual(), intervaloSeg, rede.temAr(), fatorAr);
-            var status = !rede.temAgua() ? "SEM ÁGUA" : (rede.temAr() ? "COM AR" : "NORMAL");
 
-            //3.Gera a imagem do display com os novos dados
-            tela.atualizarDados(hidrometro.getVolumeConsumidoM3(), rede.getVazaoAtual(), status);
-            display.gerarImagem(hidrometro.getVolumeConsumidoM3(), rede.temAgua(), rede.temAr());
+            var status = "NORMAL";
+            if (!rede.temAgua()) {
+                status = "SEM FLUXO";
+            } else if (rede.temAr()) {
+                status = "AR NA TUBULAÇÃO";
+            }
 
-            //4.Imprime log no console
-            System.out.printf("Leitura: %.2f m³ | Vazão: %.2f m³/h | Status: %s\n",
+            //Envia também a pressão para a GUI
+            tela.atualizarDados(hidrometro.getVolumeConsumidoM3(), rede.getVazaoAtual(), rede.getPressaoAtual(), status);
+
+            //Captura a tela da GUI e salva
+            try {
+                BufferedImage screenshot = displayCaptura.capturarTela(tela.getMedidorPanel());
+                displayCaptura.salvarImagem(screenshot);
+            } catch (Exception e) {
+                System.err.println("Erro ao capturar ou salvar imagem da GUI: " + e.getMessage());
+            }
+
+            System.out.printf("Leitura: %.2f m³ | Vazão: %.2f m³/h | Pressão: %.1f bar | Status: %s\n",
                     hidrometro.getVolumeConsumidoM3(),
                     rede.getVazaoAtual(),
+                    rede.getPressaoAtual(), //Imprime a pressão no console
                     status
             );
 
-            //5.Aguarda o próximo ciclo
             try {
                 Thread.sleep(intervaloSeg * 1000L);
             } catch (InterruptedException e) {

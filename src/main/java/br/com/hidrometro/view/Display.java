@@ -3,6 +3,7 @@ package br.com.hidrometro.view;
 import br.com.hidrometro.util.Configuracao;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,7 +11,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class Display {
+public class Display { //Classe para CAPTURAR e SALVAR a imagem da GUI
+
     private final String pathSaida;
     private final String formato;
     private final String prefixo;
@@ -30,54 +32,37 @@ public class Display {
         }
     }
 
-    public void gerarImagem(double volume, boolean temAgua, boolean temAr) {
-        int width = 400;
-        int height = 200;
-
-        BufferedImage imagem = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = imagem.createGraphics();
-
-        //Configuracoes de renderizacao
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-        //Fundo
-        g2d.setColor(Color.DARK_GRAY);
-        g2d.fillRect(0, 0, width, height);
-
-        //Desenha os digitos do medidor
-        String volumeTexto = String.format("%09.3f", volume).replace(",", "");
-        String parteInteira = volumeTexto.substring(0, 5);
-        String parteDecimal = volumeTexto.substring(5);
-
-        g2d.setFont(new Font("Courier New", Font.BOLD, 80));
-
-        //Parte inteira (em branco)
-        g2d.setColor(Color.WHITE);
-        g2d.drawString(parteInteira, 20, 100);
-
-        //Parte decimal (em vermelho)
-        g2d.setColor(Color.RED);
-        g2d.drawString(parteDecimal, 240, 100);
-
-        //Unidade
-        g2d.setFont(new Font("Arial", Font.BOLD, 20));
-        g2d.setColor(Color.LIGHT_GRAY);
-        g2d.drawString("m³", 300, 130);
-
-        //Desenha status (Falta de água, Ar)
-        g2d.setFont(new Font("Arial", Font.BOLD, 18));
-        if (!temAgua) {
-            g2d.setColor(Color.YELLOW);
-            g2d.drawString("SEM FLUXO", 20, 180);
-        } else if (temAr) {
-            g2d.setColor(Color.CYAN);
-            g2d.drawString("AR NA TUBULAÇÃO", 180, 180);
+    /**
+     * Captura a imagem de um componente Swing (neste caso, o MedidorPanel).
+     * @param panel O JPanel a ser capturado.
+     * @return Um BufferedImage contendo a renderização do painel.
+     */
+    public BufferedImage capturarTela(JPanel panel) {
+        //Garante que a captura ocorra na EDT
+        final BufferedImage[] imageHolder = {null};
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2d = image.createGraphics();
+                panel.paint(g2d); //Pinta o painel no BufferedImage
+                g2d.dispose();
+                imageHolder[0] = image;
+            });
+        } catch (Exception e) {
+            System.err.println("Erro ao capturar a tela do painel: " + e.getMessage());
         }
+        return imageHolder[0];
+    }
 
-        g2d.dispose();
-
-        //Salva a imagem em um arquivo
+    /**
+     * Salva uma BufferedImage em um arquivo.
+     * @param imagem A imagem a ser salva.
+     */
+    public void salvarImagem(BufferedImage imagem) {
+        if (imagem == null) {
+            System.err.println("Não foi possível salvar imagem nula.");
+            return;
+        }
         try {
             String nomeArquivo = String.format("%s%05d.%s", prefixo, ++contadorImagens, formato);
             File arquivoSaida = new File(pathSaida, nomeArquivo);

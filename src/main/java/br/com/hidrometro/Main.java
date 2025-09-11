@@ -1,12 +1,13 @@
 package br.com.hidrometro;
 
+import javax.swing.SwingUtilities;
+
 public class Main {
     public static void main(String[] args) {
-        Simulador simulador = new Simulador();
-        simulador.iniciar();
-
-        //Adiciona um gancho de desligamento para parar o simulador
-        //quando o programa for encerrado (ex: com Ctrl+C no terminal).
-        Runtime.getRuntime().addShutdownHook(new Thread(simulador::parar));
+        //Criar e iniciar o simulador na Event Dispatch Thread (EDT) para garantir a inicialização correta da GUI
+        SwingUtilities.invokeLater(() -> {
+            Simulador simulador = new Simulador();
+            simulador.iniciar();
+        });
     }
 }
