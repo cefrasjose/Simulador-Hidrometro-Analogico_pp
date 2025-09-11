@@ -5,7 +5,7 @@ public class Main {
         Simulador simulador = new Simulador();
         simulador.iniciar();
 
-        //Adiciona um gancho de desligamento para parar o simulador graciosamente
+        //Adiciona um gancho de desligamento para parar o simulador
         //quando o programa for encerrado (ex: com Ctrl+C no terminal).
         Runtime.getRuntime().addShutdownHook(new Thread(simulador::parar));
     }

@@ -14,7 +14,7 @@ public class Simulador {
     private Thread threadSimulacao;
 
     public Simulador() {
-        this.config = new Configuracao("config/parametros.txt");
+        this.config = new Configuracao("config/parametros.properties");
         this.rede = new RedeHidraulica(config);
         this.hidrometro = new Hidrometro();
         this.display = new Display(config);

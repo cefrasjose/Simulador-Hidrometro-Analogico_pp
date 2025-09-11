@@ -9,7 +9,7 @@ public class Configuracao {
     private final Properties prop = new Properties();
 
     public Configuracao(String caminhoArquivo) {
-        try (InputStream input = new FileInputStream(caminhoArquivo)) {
+        try (InputStream input = Configuracao.class.getClassLoader().getResourceAsStream(caminhoArquivo)) {
             prop.load(input);
         } catch (IOException ex) {
             System.err.println("Erro: Não foi possível carregar o arquivo de configuração.");

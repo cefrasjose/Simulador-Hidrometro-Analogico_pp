@@ -28,7 +28,7 @@ public class RedeHidraulica {
             return;
         }
 
-        // Simula presença de ar
+        //Simula presença de ar
         comAr = random.nextDouble() < config.getDouble("probabilidade.presenca.de.ar");
 
         //Simula variação na vazão
