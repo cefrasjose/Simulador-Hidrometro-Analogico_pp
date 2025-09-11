@@ -43,23 +43,23 @@ public class Simulador {
         double fatorAr = config.getDouble("fator.consumo.com.ar");
 
         while (rodando) {
-            // 1. Atualiza o estado da rede (vazão, ar, falta de água)
+            //1.Atualiza o estado da rede (vazão, ar, falta de água)
             rede.atualizarEstado();
 
-            // 2. Registra o consumo no hidrômetro
+            //2.Registra o consumo no hidrômetro
             hidrometro.registrarConsumo(rede.getVazaoAtual(), intervaloSeg, rede.temAr(), fatorAr);
 
-            // 3. Gera a imagem do display com os novos dados
+            //3.Gera a imagem do display com os novos dados
             display.gerarImagem(hidrometro.getVolumeConsumidoM3(), rede.temAgua(), rede.temAr());
 
-            // 4. Imprime log no console
+            //4.Imprime log no console
             System.out.printf("Leitura: %.3f m³ | Vazão: %.2f m³/h | Status: %s\n",
                     hidrometro.getVolumeConsumidoM3(),
                     rede.getVazaoAtual(),
                     !rede.temAgua() ? "SEM ÁGUA" : (rede.temAr() ? "COM AR" : "NORMAL")
             );
 
-            // 5. Aguarda o próximo ciclo
+            //5.Aguarda o próximo ciclo
             try {
                 Thread.sleep(intervaloSeg * 1000L);
             } catch (InterruptedException e) {

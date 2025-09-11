@@ -31,9 +31,9 @@ public class RedeHidraulica {
         // Simula presença de ar
         comAr = random.nextDouble() < config.getDouble("probabilidade.presenca.de.ar");
 
-        // Simula variação na vazão
+        //Simula variação na vazão
         double vazaoMedia = config.getDouble("vazao.media");
-        // Variação de até 30% da média, para mais ou para menos
+        //Variação de até 30% da média, para mais ou para menos
         double variacao = (random.nextDouble() - 0.5) * (vazaoMedia * 0.3);
         this.vazaoAtual = Math.max(0, vazaoMedia + variacao);
     }
