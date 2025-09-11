@@ -37,7 +37,7 @@ public class Display {
         BufferedImage imagem = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = imagem.createGraphics();
 
-        //Configurações de renderização para melhor qualidade
+        //Configuracoes de renderizacao
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
@@ -45,7 +45,7 @@ public class Display {
         g2d.setColor(Color.DARK_GRAY);
         g2d.fillRect(0, 0, width, height);
 
-        //Desenha os dígitos do medidor
+        //Desenha os digitos do medidor
         String volumeTexto = String.format("%09.3f", volume).replace(",", "");
         String parteInteira = volumeTexto.substring(0, 5);
         String parteDecimal = volumeTexto.substring(5);
