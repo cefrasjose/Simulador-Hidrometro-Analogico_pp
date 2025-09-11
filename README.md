@@ -59,7 +59,7 @@ A arquitetura do software segue o princípio da separação de responsabilidades
 
 A imagem abaixo ilustra o relacionamento entre as principais classes do sistema.
 
-![Diagrama de Classes](https://i.imgur.com/gD4i2sR.png)
+![Diagrama de Classes](UMLHidrômetro.png)
 
 ---
 
