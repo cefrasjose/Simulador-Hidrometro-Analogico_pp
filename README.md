@@ -31,17 +31,7 @@ A simulação é exibida em tempo real em uma janela, com a leitura numérica e 
 
 Paralelamente à GUI, o simulador gera logs no console, detalhando o estado da rede a cada ciclo. Isso é útil para depuração e para o uso do simulador em sistemas que não necessitam da interface visual.
 
-```console![Exemplo do console](docs/images/gui_exemplo.png)
-Simulador iniciado. Pressione Ctrl+C para parar.
-Leitura: 8.32 m³ | Vazão: 19.85 m³/h | Pressão: 2.1 bar | Status: NORMAL
-Leitura: 8.33 m³ | Vazão: 20.15 m³/h | Pressão: 2.2 bar | Status: NORMAL
-Leitura: 8.35 m³ | Vazão: 21.40 m³/h | Pressão: 2.3 bar | Status: AR NA TUBULAÇÃO
-Leitura: 8.36 m³ | Vazão: 19.50 m³/h | Pressão: 1.9 bar | Status: NORMAL
-AVISO: Ocorreu uma FALTA DE Água.
-Leitura: 8.36 m³ | Vazão: 0.00 m³/h | Pressão: 0.0 bar | Status: SEM FLUXO
-AVISO: O fornecimento de água foi RESTABELECIDO.
-Leitura: 8.37 m³ | Vazão: 18.99 m³/h | Pressão: 2.0 bar | Status: NORMAL
-```
+![Exemplo do console](docs/images/console_output.png)
 
 ---
 
