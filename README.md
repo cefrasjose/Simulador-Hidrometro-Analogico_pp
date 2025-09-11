@@ -170,7 +170,7 @@ probabilidade.presenca.de.ar=0.05
 fator.consumo.com.ar=1.3
 ```
 ## Créditos
----
+
 - Estudante/desenvolvedor:
 Cefras José Ferreira Mandú de Almeida
 
