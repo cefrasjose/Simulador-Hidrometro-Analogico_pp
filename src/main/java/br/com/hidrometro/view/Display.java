@@ -33,7 +33,7 @@ public class Display { //Classe para CAPTURAR e SALVAR a imagem da GUI
     }
 
     /**
-     * Captura a imagem de um componente Swing (neste caso, o MedidorPanel).
+     * Captura a imagem de um componente Swing (MedidorPanel).
      * @param panel O JPanel a ser capturado.
      * @return Um BufferedImage contendo a renderização do painel.
      */

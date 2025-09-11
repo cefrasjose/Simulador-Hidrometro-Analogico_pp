@@ -41,7 +41,7 @@ public class Simulador {
     public void parar() {
         rodando = false;
         try {
-            if (threadSimulacao != null) { //Adicionado verificação para evitar NullPointerException
+            if (threadSimulacao != null) {
                 threadSimulacao.join();
             }
             SwingUtilities.invokeLater(() -> { //Garante que a GUI seja fechada na EDT

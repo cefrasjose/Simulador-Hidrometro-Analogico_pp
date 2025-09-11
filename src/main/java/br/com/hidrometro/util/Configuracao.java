@@ -9,7 +9,6 @@ public class Configuracao {
     private final Properties prop = new Properties();
 
     public Configuracao(String caminhoArquivo) {
-        //A chave aqui é o caminho da pasta `resources`
         //Para Maven/Gradle, `src/main/resources/config/parametros.properties` vira `config/parametros.properties`
         try (InputStream input = Configuracao.class.getClassLoader().getResourceAsStream(caminhoArquivo)) {
             if (input == null) {
@@ -19,7 +18,6 @@ public class Configuracao {
         } catch (IOException ex) {
             System.err.println("Erro fatal: Não foi possível carregar o arquivo de configuração. " + ex.getMessage());
             ex.printStackTrace();
-            //Lançar RuntimeException para parar o aplicativo se a configuração não puder ser carregada
             throw new RuntimeException("Falha ao inicializar: arquivo de configuração ausente ou ilegível.");
         }
     }

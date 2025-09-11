@@ -14,7 +14,7 @@ public class HidrometroGUI extends JFrame {
 
     private BufferedImage hidrometroImage;
     private MedidorPanel medidorPanel;
-    private JLabel statusLabel; // Label para mostrar o status
+    private JLabel statusLabel; //Label para mostrar o status
 
     public HidrometroGUI() {
         setTitle("Hidrômetro Digital");
@@ -36,13 +36,13 @@ public class HidrometroGUI extends JFrame {
         add(statusPanel, BorderLayout.SOUTH);
     }
 
-    public void atualizarDados(double leitura, double vazao, double pressao, String status) { // Adicionado 'pressao'
+    public void atualizarDados(double leitura, double vazao, double pressao, String status) { //Adicionado 'pressao'
         SwingUtilities.invokeLater(() -> {
             medidorPanel.setLeitura(leitura);
             medidorPanel.setVazao(vazao);
-            medidorPanel.setPressao(pressao); // NOVO: Passa a pressão
+            medidorPanel.setPressao(pressao); //Passa a pressão
             statusLabel.setText("Status: " + status);
-            medidorPanel.repaint(); // Redesenha o painel
+            medidorPanel.repaint(); //Redesenha o painel
         });
     }
 
@@ -52,7 +52,7 @@ public class HidrometroGUI extends JFrame {
 
     private void carregarImagemHidrometro() {
         try {
-            // Ajustado para carregar de resources via ClassLoader
+            //Ajustado para carregar de resources via ClassLoader
             InputStream is = getClass().getClassLoader().getResourceAsStream("hidrometro.png");
             if (is != null) {
                 hidrometroImage = ImageIO.read(is);
@@ -129,7 +129,7 @@ public class HidrometroGUI extends JFrame {
                     char digitoChar = leituraCompleta.charAt(i);
                     String digitoStr = String.valueOf(digitoChar);
 
-                    // Define a cor
+                    //Define a cor
                     if (i < 3) {
                         g2d.setColor(Color.BLACK);
                     } else {
@@ -145,7 +145,7 @@ public class HidrometroGUI extends JFrame {
                     g2d.drawString(digitoStr, xDigito, yLeitura);
                 }
 
-                //2. PONTEIRO DE LITROS (Superior direito)
+                //2.PONTEIRO DE LITROS (Superior direito)
                 int centroPonteiroLitrosX = imgX + 337;
                 int centroPonteiroLitrosY = imgY + 304;
                 int comprimentoPonteiroLitros = 24;
@@ -159,8 +159,7 @@ public class HidrometroGUI extends JFrame {
                 g2d.drawLine(0, 0, comprimentoPonteiroLitros, 0);
                 g2d.setTransform(oldTransform);
 
-
-                //3. PONTEIRO CENTRAL DE VAZÃO (Inferior direito)
+                //3.PONTEIRO CENTRAL DE VAZÃO (Inferior direito)
                 int centroPonteiroVazaoX = imgX + 258;
                 int centroPonteiroVazaoY = imgY + 303;
                 int comprimentoPonteiroVazao = 23;
@@ -172,7 +171,7 @@ public class HidrometroGUI extends JFrame {
                 g2d.drawLine(0, 0, comprimentoPonteiroVazao, 0);
                 g2d.setTransform(oldTransform);
 
-                //4. PONTEIRO DE PRESSÃO (Inferior esquerdo)
+                //4.PONTEIRO DE PRESSÃO (Inferior esquerdo)
                 int centroPonteiroPressaoX = imgX + 259;
                 int centroPonteiroPressaoY = imgY + 385;
                 int comprimentoPonteiroPressao = 25;
@@ -184,8 +183,7 @@ public class HidrometroGUI extends JFrame {
                 g2d.drawLine(0, 0, comprimentoPonteiroPressao, 0);
                 g2d.setTransform(oldTransform);
 
-
-                //5. Exibir Vazão e Pressão como texto
+                //5.Exibir Vazão e Pressão como texto
                 if (statusLabel.getText().contains("NORMAL")) {
                     g2d.setFont(new Font("Calibri", Font.BOLD, 9));
                     g2d.setColor(Color.BLACK);

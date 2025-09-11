@@ -14,7 +14,7 @@ public class RedeHidraulica {
     public RedeHidraulica(Configuracao config) {
         this.config = config;
         this.comAgua = true; //Começa com água
-        this.pressaoAtual = config.getDouble("pressao.media"); // Inicializa a pressão
+        this.pressaoAtual = config.getDouble("pressao.media"); //Inicializa a pressão
     }
 
     public void atualizarEstado() {
