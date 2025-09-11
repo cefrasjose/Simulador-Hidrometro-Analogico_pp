@@ -169,3 +169,10 @@ probabilidade.presenca.de.ar=0.05
 # Ex: 1.3 significa que o hidrômetro registrará 30% a mais de "volume".
 fator.consumo.com.ar=1.3
 ```
+## Créditos
+---
+- Estudante/desenvolvedor:
+Cefras José Ferreira Mandú de Almeida
+
+- Professor responsável:
+Katyusco de Farias Santos
