@@ -67,7 +67,7 @@ simulador-hidrometro/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── br/com/hidrometro/  # Pacote raiz do código-fonte
+│   │   │   └── br.com.hidrometro/  # Pacote raiz do código-fonte
 │   │   │       ├── model/
 │   │   │       ├── util/
 │   │   │       ├── view/
