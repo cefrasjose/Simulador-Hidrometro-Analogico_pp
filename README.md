@@ -4,7 +4,7 @@
 
 ## 📖 Visão Geral
 
-Este projeto é um **Simulador de Hidrômetro Digital** desenvolvido em Java, utilizando Programação Orientada a Objetos e uma interface gráfica com **Java Swing**. O objetivo é fornecer uma representação visual interativa e funcional de um hidrômetro, que pode ser integrada a outros softwares ou usada para testes e demonstrações, eliminando a necessidade de um dispositivo físico.
+Este projeto é um **Simulador de Hidrômetro Analógico** desenvolvido em Java, utilizando Programação Orientada a Objetos e uma interface gráfica com **Java Swing**. O objetivo é fornecer uma representação visual interativa e funcional de um hidrômetro, que pode ser integrada a outros softwares ou usada para testes e demonstrações, eliminando a necessidade de um dispositivo físico.
 
 O simulador carrega configurações de um arquivo de propriedades, opera de forma contínua com uma lógica de simulação em uma thread separada, e exibe os dados em uma GUI que imita um medidor real. Adicionalmente, o sistema captura e salva imagens da sua própria interface em intervalos regulares, criando um histórico visual das leituras.
 
@@ -155,7 +155,7 @@ A arquitetura do software segue o princípio da separação de responsabilidades
 ![Diagrama de Classes](UMLHidrômetro.png)
 
 ```
-## Créditos
+Créditos
 
 - Estudante/desenvolvedor:
 Cefras José Ferreira Mandú de Almeida
