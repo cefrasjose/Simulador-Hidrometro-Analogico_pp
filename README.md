@@ -152,7 +152,7 @@ fator.consumo.com.ar=1.3
 
 A arquitetura do software segue o princípio da separação de responsabilidades, dividindo o código em `model` (lógica de negócio), `view` (GUI e captura) e `util` (configuração), orquestrados pelo `Simulador`.
 
-![Diagrama de Classes](https://i.imgur.com/gD4i2sR.png)
+![Diagrama de Classes](UMLHidrômetro.png)
 
 ```
 ## Créditos
