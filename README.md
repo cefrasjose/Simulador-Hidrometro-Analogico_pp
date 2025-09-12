@@ -1,4 +1,4 @@
-# Simulador de Hidrômetro em Java
+# Simulador de Hidrômetro Analógico
 
 ![Java](https://img.shields.io/badge/Java-11%2B-blue?logo=java&logoColor=white) ![Build](https://img.shields.io/badge/Build-Maven-orange?logo=apache-maven&logoColor=white) ![UI](https://img.shields.io/badge/UI-Java%20Swing-red) ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
