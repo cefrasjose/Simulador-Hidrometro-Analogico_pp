@@ -142,7 +142,7 @@ matricula.suap=202310980012
 
 A arquitetura foi atualizada para refletir a **associação bidirecional** entre o `Simulador` (controlador) e a `HidrometroGUI` (visão), permitindo a interatividade em tempo real.
 
-![Diagrama de Classes v2.0](Diagrama de classes hidrometro_Cefras MandúPP_2025.2.png)
+![Diagrama de Classes v2.0](UML-Hidrometro-v2.png)
 
 ```
 Créditos
