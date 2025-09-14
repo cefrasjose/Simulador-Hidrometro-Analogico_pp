@@ -1,5 +1,6 @@
 package br.com.hidrometro.view;
 
+import br.com.hidrometro.Simulador;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -9,17 +10,19 @@ import java.awt.event.ActionListener;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 
 public class HidrometroGUI extends JFrame {
 
     private BufferedImage hidrometroImage;
     private MedidorPanel medidorPanel;
-    private JLabel statusLabel; //Label para mostrar o status
+    private JLabel statusLabel;
+    private JLabel vazaoMediaLabel; //Label para a vazao media
 
-    public HidrometroGUI() {
+    public HidrometroGUI(Simulador simulador) {
         setTitle("Hidrômetro Digital");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 600);
+        setSize(500, 650);
         setLocationRelativeTo(null);
 
         carregarImagemHidrometro();
@@ -27,6 +30,25 @@ public class HidrometroGUI extends JFrame {
         medidorPanel = new MedidorPanel();
         add(medidorPanel, BorderLayout.CENTER);
 
+        //Painel de Controle para vazao
+        JPanel controlPanel = new JPanel();
+        controlPanel.setBackground(Color.DARK_GRAY);
+        JButton diminuirVazaoBtn = new JButton("-");
+        JButton aumentarVazaoBtn = new JButton("+");
+        vazaoMediaLabel = new JLabel("Vazão Média: 0.00 m³/h");
+        vazaoMediaLabel.setForeground(Color.WHITE);
+
+        controlPanel.add(new JLabel("Controlar Vazão Média: "){{setForeground(Color.WHITE);}});
+        controlPanel.add(diminuirVazaoBtn);
+        controlPanel.add(aumentarVazaoBtn);
+        controlPanel.add(vazaoMediaLabel);
+        add(controlPanel, BorderLayout.NORTH); //Adiciona o painel no topo
+
+        //Acoes dos botoes
+        aumentarVazaoBtn.addActionListener(e -> simulador.solicitarAumentoVazao(1.0)); //Incremento de 1.0
+        diminuirVazaoBtn.addActionListener(e -> simulador.solicitarDiminuicaoVazao(1.0)); //Decremento de 1.0
+
+        //Painel de status
         JPanel statusPanel = new JPanel();
         statusPanel.setBackground(Color.DARK_GRAY);
         statusLabel = new JLabel("Status: Aguardando dados...");
@@ -36,13 +58,19 @@ public class HidrometroGUI extends JFrame {
         add(statusPanel, BorderLayout.SOUTH);
     }
 
-    public void atualizarDados(double leitura, double vazao, double pressao, String status) { //Adicionado 'pressao'
+    /*Assinatura do metodo alterada para receber a vazao media*/
+    public void atualizarDados(double leitura, double vazao, double pressao, double vazaoMedia, String status) {
         SwingUtilities.invokeLater(() -> {
             medidorPanel.setLeitura(leitura);
             medidorPanel.setVazao(vazao);
-            medidorPanel.setPressao(pressao); //Passa a pressão
+            medidorPanel.setPressao(pressao);
             statusLabel.setText("Status: " + status);
-            medidorPanel.repaint(); //Redesenha o painel
+
+            //Atualiza o label da vazao media
+            DecimalFormat df = new DecimalFormat("#.00");
+            vazaoMediaLabel.setText("Vazão Média: " + df.format(vazaoMedia) + " m³/h");
+
+            medidorPanel.repaint();
         });
     }
 
@@ -52,7 +80,6 @@ public class HidrometroGUI extends JFrame {
 
     private void carregarImagemHidrometro() {
         try {
-            //Ajustado para carregar de resources via ClassLoader
             InputStream is = getClass().getClassLoader().getResourceAsStream("hidrometro.png");
             if (is != null) {
                 hidrometroImage = ImageIO.read(is);
@@ -65,38 +92,27 @@ public class HidrometroGUI extends JFrame {
     }
 
     class MedidorPanel extends JPanel implements ActionListener {
-        private double leituraAtual = 0.0;
-        private double vazaoAtual = 0.0;
-        private double pressaoAtual = 0.0; //Armazena a pressão
-
-        //Ângulos para os ponteiros animados
-        private double anguloPonteiroVazao = 0.0;
-        private double anguloPonteiroPressao = 0.0; //Ângulo para o ponteiro de pressão
+        private double leituraAtual = 0.0, vazaoAtual = 0.0, pressaoAtual = 0.0;
+        private double anguloPonteiroVazao = 0.0, anguloPonteiroPressao = 0.0;
+        private Timer animationTimer;
 
         public void setLeitura(double leitura) { this.leituraAtual = leitura; }
         public void setVazao(double vazao) { this.vazaoAtual = vazao; }
-        public void setPressao(double pressao) { this.pressaoAtual = pressao; } //Setter para pressão
-
-        private Timer animationTimer;
+        public void setPressao(double pressao) { this.pressaoAtual = pressao; }
 
         public MedidorPanel() {
             setBackground(Color.DARK_GRAY);
-            animationTimer = new Timer(40, this); // 25 FPS
+            animationTimer = new Timer(40, this);
             animationTimer.start();
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //Animação do ponteiro de Vazão (centro, ponteiro menor)
-            //Simula um "giro" mais rápido conforme a vazão aumenta
-            anguloPonteiroVazao += (vazaoAtual / 10.0) * 0.05; //Ajuste o fator para a velocidade desejada
+            anguloPonteiroVazao += (vazaoAtual / 10.0) * 0.05;
             if (anguloPonteiroVazao > Math.PI * 2) anguloPonteiroVazao -= Math.PI * 2;
-
-            //Simula um "giro" mais rápido conforme a pressão aumenta
-            anguloPonteiroPressao += (pressaoAtual / 5.0) * 0.05; //Ajuste o fator para a velocidade desejada
+            anguloPonteiroPressao += (pressaoAtual / 5.0) * 0.05;
             if (anguloPonteiroPressao > Math.PI * 2) anguloPonteiroPressao -= Math.PI * 2;
-
-            repaint(); //Redesenha o componente
+            repaint();
         }
 
         @Override
@@ -106,89 +122,58 @@ public class HidrometroGUI extends JFrame {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-
             if (hidrometroImage != null) {
-                //Centraliza a imagem do hidrômetro
                 int imgX = (getWidth() - hidrometroImage.getWidth()) / 2;
                 int imgY = (getHeight() - hidrometroImage.getHeight()) / 2;
                 g2d.drawImage(hidrometroImage, imgX, imgY, this);
 
-                g2d.setFont(new Font("Consolas", Font.BOLD, 35));//Ajuste no tamanho da fonte
-
+                g2d.setFont(new Font("Consolas", Font.BOLD, 35));
                 String strInteira = String.format("%03d", (int) leituraAtual);
                 String strDecimal = String.format("%02d", (int) Math.round((leituraAtual - (int) leituraAtual) * 100));
                 String leituraCompleta = strInteira + strDecimal;
+                int xInicial = imgX + 180, yLeitura = imgY + 236, larguraCasa = 27;
 
-                //Coordenadas base e dimensões das "casas" dos números
-                int xInicial = imgX + 175; // Posição X
-                int yLeitura = imgY + 236; // Posição Y
-                int larguraCasa = 27;     // Largura de cada caixa de dígito
-
-                //Loop para desenhar cada dígito individualmente
                 for (int i = 0; i < leituraCompleta.length(); i++) {
                     char digitoChar = leituraCompleta.charAt(i);
                     String digitoStr = String.valueOf(digitoChar);
-
-                    //Define a cor
-                    if (i < 3) {
-                        g2d.setColor(Color.BLACK);
-                    } else {
-                        g2d.setColor(Color.RED);
-                    }
-
-                    //Calcula a posição X para centralizar o dígito dentro da sua casa
+                    g2d.setColor(i < 3 ? Color.BLACK : Color.RED);
                     FontMetrics fm = g2d.getFontMetrics();
                     int larguraDigito = fm.stringWidth(digitoStr);
                     int xDigito = xInicial + (i * larguraCasa) + (larguraCasa - larguraDigito) / 2;
-
-                    //Desenha o dígito
                     g2d.drawString(digitoStr, xDigito, yLeitura);
                 }
 
-                //2.PONTEIRO DE LITROS (Superior direito)
-                int centroPonteiroLitrosX = imgX + 337;
-                int centroPonteiroLitrosY = imgY + 304;
-                int comprimentoPonteiroLitros = 24;
-                g2d.setColor(Color.RED);
-                double anguloLitros = Math.toRadians((leituraAtual - Math.floor(leituraAtual)) * 360.0 - 90);
-
+                //Ponteiro dos litros
                 AffineTransform oldTransform = g2d.getTransform();
-                g2d.translate(centroPonteiroLitrosX, centroPonteiroLitrosY);
-                g2d.rotate(anguloLitros);
+                g2d.setColor(Color.RED);
                 g2d.setStroke(new BasicStroke(3));
-                g2d.drawLine(0, 0, comprimentoPonteiroLitros, 0);
+                g2d.translate(imgX + 338, imgY + 304);
+                g2d.rotate(Math.toRadians((leituraAtual - Math.floor(leituraAtual)) * 360.0 - 90));
+                g2d.drawLine(0, 0, 23, 0);
                 g2d.setTransform(oldTransform);
 
-                //3.PONTEIRO CENTRAL DE VAZÃO (Inferior direito)
-                int centroPonteiroVazaoX = imgX + 258;
-                int centroPonteiroVazaoY = imgY + 303;
-                int comprimentoPonteiroVazao = 23;
+                //Ponteiro da vazao
                 g2d.setColor(Color.RED);
-                oldTransform = g2d.getTransform();
-                g2d.translate(centroPonteiroVazaoX, centroPonteiroVazaoY);
+                g2d.setStroke(new BasicStroke(2));
+                g2d.translate(imgX + 258, imgY + 304);
                 g2d.rotate(anguloPonteiroVazao);
-                g2d.setStroke(new BasicStroke(2));
-                g2d.drawLine(0, 0, comprimentoPonteiroVazao, 0);
+                g2d.drawLine(0, 0, 23, 0);
                 g2d.setTransform(oldTransform);
 
-                //4.PONTEIRO DE PRESSÃO (Inferior esquerdo)
-                int centroPonteiroPressaoX = imgX + 259;
-                int centroPonteiroPressaoY = imgY + 385;
-                int comprimentoPonteiroPressao = 25;
+                //Ponteiro pressao
                 g2d.setColor(Color.RED);
-                oldTransform = g2d.getTransform();
-                g2d.translate(centroPonteiroPressaoX, centroPonteiroPressaoY);
+                g2d.setStroke(new BasicStroke(3));
+                g2d.translate(imgX + 259, imgY + 385);
                 g2d.rotate(anguloPonteiroPressao);
-                g2d.setStroke(new BasicStroke(2));
-                g2d.drawLine(0, 0, comprimentoPonteiroPressao, 0);
+                g2d.drawLine(0, 0, 23, 0);
                 g2d.setTransform(oldTransform);
 
-                //5.Exibir Vazão e Pressão como texto
+                //Vazao e Pressao na janela
                 if (statusLabel.getText().contains("NORMAL")) {
-                    g2d.setFont(new Font("Calibri", Font.BOLD, 9));
+                    g2d.setFont(new Font("Arial", Font.PLAIN, 9));
                     g2d.setColor(Color.BLACK);
-                    g2d.drawString(String.format("Vazão: %.2f m³/h", vazaoAtual), imgX + 137, imgY + 285);
-                    g2d.drawString(String.format("Pressão: %.1f bar", pressaoAtual), imgX + 138, imgY + 300);
+                    g2d.drawString(String.format("Vazão: %.2f m³/h", vazaoAtual), imgX + 132, imgY + 287);
+                    g2d.drawString(String.format("Pressão: %.1f bar", pressaoAtual), imgX + 138, imgY + 301);
                 }
             }
         }

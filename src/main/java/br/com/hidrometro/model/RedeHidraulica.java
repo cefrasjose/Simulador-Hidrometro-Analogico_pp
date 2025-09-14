@@ -5,44 +5,58 @@ import java.util.Random;
 
 public class RedeHidraulica {
     private double vazaoAtual;
-    private double pressaoAtual; // NOVO: Atributo para pressão
+    private double pressaoAtual;
     private boolean comAr;
     private boolean comAgua;
     private final Random random = new Random();
     private final Configuracao config;
 
+    //Vazao media agora eh um atributo mutavel
+    private double vazaoMediaAtual;
+
     public RedeHidraulica(Configuracao config) {
         this.config = config;
-        this.comAgua = true; //Começa com água
-        this.pressaoAtual = config.getDouble("pressao.media"); //Inicializa a pressão
+        this.comAgua = true;
+        this.vazaoMediaAtual = config.getDouble("vazao.media"); //Inicializa com valor do arquivo
+        this.pressaoAtual = config.getDouble("pressao.media");
+    }
+
+    //Metodos sincronizados para alterar a vazao media com seguranca
+    public synchronized void aumentarVazaoMedia(double incremento) {
+        this.vazaoMediaAtual += incremento;
+        System.out.printf(">> Vazão Média ajustada para: %.2f m³/h\n", this.vazaoMediaAtual);
+    }
+
+    public synchronized void diminuirVazaoMedia(double incremento) {
+        this.vazaoMediaAtual = Math.max(0, this.vazaoMediaAtual - incremento); //Nao permite vazao negativa
+        System.out.printf(">> Vazão Média ajustada para: %.2f m³/h\n", this.vazaoMediaAtual);
+    }
+
+    public synchronized double getVazaoMediaAtual() {
+        return this.vazaoMediaAtual;
     }
 
     public void atualizarEstado() {
-        //Simula falta de água
         if (random.nextDouble() < config.getDouble("probabilidade.falta.de.agua")) {
-            comAgua = !comAgua; //Inverte o estado da água
+            comAgua = !comAgua;
             System.out.println(comAgua ? "AVISO: O fornecimento de água foi RESTABELECIDO." : "AVISO: Ocorreu uma FALTA DE ÁGUA.");
         }
 
         if (!comAgua) {
             vazaoAtual = 0;
-            pressaoAtual = 0; //Se não tem água, não tem pressão
+            pressaoAtual = 0;
             comAr = false;
             return;
         }
 
-        //Simula presença de ar
         comAr = random.nextDouble() < config.getDouble("probabilidade.presenca.de.ar");
 
-        //Simula variação na vazão
-        double vazaoMedia = config.getDouble("vazao.media");
-        //Variação de até 30% da média, para mais ou para menos
-        double variacaoVazao = (random.nextDouble() - 0.5) * (vazaoMedia * 0.3);
-        this.vazaoAtual = Math.max(0, Math.min(100, vazaoMedia + variacaoVazao));
+        //Simula variacao na vazao usando o atributo vazaoMediaAtual
+        double variacaoVazao = (random.nextDouble() - 0.5) * (this.vazaoMediaAtual * 0.3);
+        this.vazaoAtual = Math.max(0, this.vazaoMediaAtual + variacaoVazao);
 
-        //Simula variação na pressão
         double pressaoMedia = config.getDouble("pressao.media");
-        double variacaoPressao = (random.nextDouble() - 0.5) * (pressaoMedia * 0.2); //Variação de 20%
+        double variacaoPressao = (random.nextDouble() - 0.5) * (pressaoMedia * 0.2);
         this.pressaoAtual = Math.max(0, pressaoMedia + variacaoPressao);
     }
 
@@ -50,7 +64,7 @@ public class RedeHidraulica {
         return vazaoAtual;
     }
 
-    public double getPressaoAtual() { //Getter para pressão
+    public double getPressaoAtual() {
         return pressaoAtual;
     }
 

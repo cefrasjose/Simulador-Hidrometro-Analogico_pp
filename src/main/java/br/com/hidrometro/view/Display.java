@@ -11,40 +11,30 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class Display { //Classe para CAPTURAR e SALVAR a imagem da GUI
+public class Display {
 
-    private final String pathSaida;
-    private final String formato;
-    private final String prefixo;
-    private int contadorImagens = 0;
+    private final String pathSaidaCondicional; //Caminho para a pasta "Medições_MATRICULA"
 
     public Display(Configuracao config) {
-        this.pathSaida = config.getString("path.saida.imagens");
-        this.formato = config.getString("formato.imagem");
-        this.prefixo = config.getString("prefixo.nome.imagem");
+        //Constroi o nome do diretorio de saída com base na matricula
+        String matricula = config.getString("matricula.suap");
+        this.pathSaidaCondicional = "Medições_" + matricula;
 
-        //Garante que o diretório de saída exista
         try {
-            Files.createDirectories(Paths.get(this.pathSaida));
+            Files.createDirectories(Paths.get(this.pathSaidaCondicional));
         } catch (IOException e) {
-            System.err.println("Erro ao criar diretório de saída de imagens.");
+            System.err.println("Erro ao criar diretório de medições.");
             e.printStackTrace();
         }
     }
 
-    /**
-     * Captura a imagem de um componente Swing (MedidorPanel).
-     * @param panel O JPanel a ser capturado.
-     * @return Um BufferedImage contendo a renderização do painel.
-     */
     public BufferedImage capturarTela(JPanel panel) {
-        //Garante que a captura ocorra na EDT
         final BufferedImage[] imageHolder = {null};
         try {
             SwingUtilities.invokeAndWait(() -> {
-                BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB); //Mudei para RGB para JPEG
                 Graphics2D g2d = image.createGraphics();
-                panel.paint(g2d); //Pinta o painel no BufferedImage
+                panel.paint(g2d);
                 g2d.dispose();
                 imageHolder[0] = image;
             });
@@ -54,21 +44,27 @@ public class Display { //Classe para CAPTURAR e SALVAR a imagem da GUI
         return imageHolder[0];
     }
 
-    /**
-     * Salva uma BufferedImage em um arquivo.
+    /*
+     * Salva a imagem da medicao quando um metro cubico eh completado.
+     * O nome do arquivo eh formatado como "dd.jpeg" e sobrescreve os antigos apos 99.
      * @param imagem A imagem a ser salva.
+     * @param metroCubico O numero do metro cubico atual.
      */
-    public void salvarImagem(BufferedImage imagem) {
+
+    public void salvarImagemMetroCubico(BufferedImage imagem, int metroCubico) {
         if (imagem == null) {
             System.err.println("Não foi possível salvar imagem nula.");
             return;
         }
         try {
-            String nomeArquivo = String.format("%s%05d.%s", prefixo, ++contadorImagens, formato);
-            File arquivoSaida = new File(pathSaida, nomeArquivo);
-            ImageIO.write(imagem, formato, arquivoSaida);
+            //Logica para nome do arquivo (01 a 99)
+            int numeroArquivo = (metroCubico - 1) % 99 + 1;
+            String nomeArquivo = String.format("%02d.jpeg", numeroArquivo);
+
+            File arquivoSaida = new File(pathSaidaCondicional, nomeArquivo);
+            ImageIO.write(imagem, "jpeg", arquivoSaida); //Salva em JPEG
         } catch (IOException e) {
-            System.err.println("Erro ao salvar a imagem do display.");
+            System.err.println("Erro ao salvar a imagem da medição.");
             e.printStackTrace();
         }
     }

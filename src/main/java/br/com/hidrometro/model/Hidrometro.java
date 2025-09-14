@@ -8,11 +8,11 @@ public class Hidrometro {
     }
 
     public void registrarConsumo(double vazaoM3porHora, int deltaTimeSeg, boolean comAr, double fatorAr) {
-        //Converte a vazão de m³/h para m³/s
+        //Converte a vazao de m³/h para m³/s
         double vazaoM3porSegundo = vazaoM3porHora / 3600.0;
         double volumeAdicional = vazaoM3porSegundo * deltaTimeSeg;
 
-        //Se houver ar, o consumo registrado é maior
+        //Se houver ar, o consumo registrado eh maior
         if (comAr) {
             volumeAdicional *= fatorAr;
         }
