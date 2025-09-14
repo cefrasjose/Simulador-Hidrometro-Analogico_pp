@@ -25,7 +25,7 @@ public class Configuracao {
         if (valor == null) {
             throw new IllegalArgumentException("Chave '" + chave + "' não encontrada no arquivo de configuração.");
         }
-        //.trim(), remove espacos antes de converter
+        //.trim(),  remove espacos antes de converter
         return Double.parseDouble(valor.trim());
     }
 
@@ -43,7 +43,7 @@ public class Configuracao {
         if (valor == null) {
             throw new IllegalArgumentException("Chave '" + chave + "' não encontrada no arquivo de configuração.");
         }
-        //.trim(), remove espacos
+        //.trim(),  remove espacos
         return valor.trim();
     }
 }

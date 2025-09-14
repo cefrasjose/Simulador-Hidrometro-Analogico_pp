@@ -11,7 +11,7 @@ public class RedeHidraulica {
     private final Random random = new Random();
     private final Configuracao config;
 
-    //azao media agora eh um atributo mutavel
+    //vazao media agora eh um atributo mutavel
     private double vazaoMediaAtual;
 
     public RedeHidraulica(Configuracao config) {

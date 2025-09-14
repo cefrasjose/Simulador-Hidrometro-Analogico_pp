@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 
 public class Display {
 
-    private final String pathSaidaCondicional; //caminho para a pasta "Medições_MATRICULA"
+    private final String pathSaidaCondicional; // caminho para a pasta "Medições_MATRICULA"
 
     public Display(Configuracao config) {
         //constroi o nome do diretorio de saída com base na matricula

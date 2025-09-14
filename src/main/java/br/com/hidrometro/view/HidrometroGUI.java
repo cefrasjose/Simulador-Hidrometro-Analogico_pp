@@ -48,7 +48,7 @@ public class HidrometroGUI extends JFrame {
         aumentarVazaoBtn.addActionListener(e -> simulador.solicitarAumentoVazao(1.0)); //incremento de 1.0
         diminuirVazaoBtn.addActionListener(e -> simulador.solicitarDiminuicaoVazao(1.0)); //decremento de 1.0
 
-        //Painel de status
+        //painel de status
         JPanel statusPanel = new JPanel();
         statusPanel.setBackground(Color.DARK_GRAY);
         statusLabel = new JLabel("Status: Aguardando dados...");
