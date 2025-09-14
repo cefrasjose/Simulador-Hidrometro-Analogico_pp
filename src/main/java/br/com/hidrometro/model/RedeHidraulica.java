@@ -11,24 +11,24 @@ public class RedeHidraulica {
     private final Random random = new Random();
     private final Configuracao config;
 
-    //Vazao media agora eh um atributo mutavel
+    //azao media agora eh um atributo mutavel
     private double vazaoMediaAtual;
 
     public RedeHidraulica(Configuracao config) {
         this.config = config;
         this.comAgua = true;
-        this.vazaoMediaAtual = config.getDouble("vazao.media"); //Inicializa com valor do arquivo
+        this.vazaoMediaAtual = config.getDouble("vazao.media"); //inicializa com valor do arquivo
         this.pressaoAtual = config.getDouble("pressao.media");
     }
 
-    //Metodos sincronizados para alterar a vazao media com seguranca
+    //metodos sincronizados para alterar a vazao media com seguranca
     public synchronized void aumentarVazaoMedia(double incremento) {
         this.vazaoMediaAtual += incremento;
         System.out.printf(">> Vazão Média ajustada para: %.2f m³/h\n", this.vazaoMediaAtual);
     }
 
     public synchronized void diminuirVazaoMedia(double incremento) {
-        this.vazaoMediaAtual = Math.max(0, this.vazaoMediaAtual - incremento); //Nao permite vazao negativa
+        this.vazaoMediaAtual = Math.max(0, this.vazaoMediaAtual - incremento); //nao permite vazao negativa
         System.out.printf(">> Vazão Média ajustada para: %.2f m³/h\n", this.vazaoMediaAtual);
     }
 
@@ -51,7 +51,7 @@ public class RedeHidraulica {
 
         comAr = random.nextDouble() < config.getDouble("probabilidade.presenca.de.ar");
 
-        //Simula variacao na vazao usando o atributo vazaoMediaAtual
+        //simula variacao na vazao usando o atributo vazaoMediaAtual
         double variacaoVazao = (random.nextDouble() - 0.5) * (this.vazaoMediaAtual * 0.3);
         this.vazaoAtual = Math.max(0, this.vazaoMediaAtual + variacaoVazao);
 

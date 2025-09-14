@@ -13,10 +13,10 @@ import java.nio.file.Paths;
 
 public class Display {
 
-    private final String pathSaidaCondicional; //Caminho para a pasta "Medições_MATRICULA"
+    private final String pathSaidaCondicional; //caminho para a pasta "Medições_MATRICULA"
 
     public Display(Configuracao config) {
-        //Constroi o nome do diretorio de saída com base na matricula
+        //constroi o nome do diretorio de saída com base na matricula
         String matricula = config.getString("matricula.suap");
         this.pathSaidaCondicional = "Medições_" + matricula;
 
@@ -32,7 +32,7 @@ public class Display {
         final BufferedImage[] imageHolder = {null};
         try {
             SwingUtilities.invokeAndWait(() -> {
-                BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB); //Mudei para RGB para JPEG
+                BufferedImage image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB); //mudei para RGB para JPEG
                 Graphics2D g2d = image.createGraphics();
                 panel.paint(g2d);
                 g2d.dispose();
@@ -57,12 +57,12 @@ public class Display {
             return;
         }
         try {
-            //Logica para nome do arquivo (01 a 99)
+            //logica para nome do arquivo (01 a 99)
             int numeroArquivo = (metroCubico - 1) % 99 + 1;
             String nomeArquivo = String.format("%02d.jpeg", numeroArquivo);
 
             File arquivoSaida = new File(pathSaidaCondicional, nomeArquivo);
-            ImageIO.write(imagem, "jpeg", arquivoSaida); //Salva em JPEG
+            ImageIO.write(imagem, "jpeg", arquivoSaida); //salva em JPEG
         } catch (IOException e) {
             System.err.println("Erro ao salvar a imagem da medição.");
             e.printStackTrace();

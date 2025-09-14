@@ -17,7 +17,7 @@ public class HidrometroGUI extends JFrame {
     private BufferedImage hidrometroImage;
     private MedidorPanel medidorPanel;
     private JLabel statusLabel;
-    private JLabel vazaoMediaLabel; //Label para a vazao media
+    private JLabel vazaoMediaLabel; //label para a vazao media
 
     public HidrometroGUI(Simulador simulador) {
         setTitle("Hidrômetro Digital");
@@ -30,7 +30,7 @@ public class HidrometroGUI extends JFrame {
         medidorPanel = new MedidorPanel();
         add(medidorPanel, BorderLayout.CENTER);
 
-        //Painel de Controle para vazao
+        //painel de Controle para vazao
         JPanel controlPanel = new JPanel();
         controlPanel.setBackground(Color.DARK_GRAY);
         JButton diminuirVazaoBtn = new JButton("-");
@@ -42,11 +42,11 @@ public class HidrometroGUI extends JFrame {
         controlPanel.add(diminuirVazaoBtn);
         controlPanel.add(aumentarVazaoBtn);
         controlPanel.add(vazaoMediaLabel);
-        add(controlPanel, BorderLayout.NORTH); //Adiciona o painel no topo
+        add(controlPanel, BorderLayout.NORTH); //adiciona o painel no topo
 
-        //Acoes dos botoes
-        aumentarVazaoBtn.addActionListener(e -> simulador.solicitarAumentoVazao(1.0)); //Incremento de 1.0
-        diminuirVazaoBtn.addActionListener(e -> simulador.solicitarDiminuicaoVazao(1.0)); //Decremento de 1.0
+        //acoes dos botoes
+        aumentarVazaoBtn.addActionListener(e -> simulador.solicitarAumentoVazao(1.0)); //incremento de 1.0
+        diminuirVazaoBtn.addActionListener(e -> simulador.solicitarDiminuicaoVazao(1.0)); //decremento de 1.0
 
         //Painel de status
         JPanel statusPanel = new JPanel();
@@ -66,7 +66,7 @@ public class HidrometroGUI extends JFrame {
             medidorPanel.setPressao(pressao);
             statusLabel.setText("Status: " + status);
 
-            //Atualiza o label da vazao media
+            //atualiza o label da vazao media
             DecimalFormat df = new DecimalFormat("#.00");
             vazaoMediaLabel.setText("Vazão Média: " + df.format(vazaoMedia) + " m³/h");
 
@@ -143,7 +143,7 @@ public class HidrometroGUI extends JFrame {
                     g2d.drawString(digitoStr, xDigito, yLeitura);
                 }
 
-                //Ponteiro dos litros
+                //ponteiro dos litros
                 AffineTransform oldTransform = g2d.getTransform();
                 g2d.setColor(Color.RED);
                 g2d.setStroke(new BasicStroke(3));
@@ -152,7 +152,7 @@ public class HidrometroGUI extends JFrame {
                 g2d.drawLine(0, 0, 23, 0);
                 g2d.setTransform(oldTransform);
 
-                //Ponteiro da vazao
+                //ponteiro da vazao
                 g2d.setColor(Color.RED);
                 g2d.setStroke(new BasicStroke(2));
                 g2d.translate(imgX + 258, imgY + 304);
@@ -160,7 +160,7 @@ public class HidrometroGUI extends JFrame {
                 g2d.drawLine(0, 0, 23, 0);
                 g2d.setTransform(oldTransform);
 
-                //Ponteiro pressao
+                //ponteiro pressao
                 g2d.setColor(Color.RED);
                 g2d.setStroke(new BasicStroke(3));
                 g2d.translate(imgX + 259, imgY + 385);
@@ -168,7 +168,7 @@ public class HidrometroGUI extends JFrame {
                 g2d.drawLine(0, 0, 23, 0);
                 g2d.setTransform(oldTransform);
 
-                //Vazao e Pressao na janela
+                //vazao e Pressao na janela
                 if (statusLabel.getText().contains("NORMAL")) {
                     g2d.setFont(new Font("Arial", Font.PLAIN, 9));
                     g2d.setColor(Color.BLACK);

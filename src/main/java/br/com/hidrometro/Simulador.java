@@ -60,7 +60,7 @@ public class Simulador {
 
             rede.atualizarEstado();
 
-            //Passa 'intervaloSeg' (int) para o metodo, como ele espera.
+            //passa 'intervaloSeg' (int) para o metodo, como ele espera.
             hidrometro.registrarConsumo(rede.getVazaoAtual(), intervaloSeg, rede.temAr(), fatorAr);
 
             var status = "NORMAL";
