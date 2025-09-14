@@ -1,21 +1,22 @@
-# Simulador de Hidrômetro Analógico
+# Simulador de Hidrômetro em Java (v2.0)
 
 ![Java](https://img.shields.io/badge/Java-11%2B-blue?logo=java&logoColor=white) ![Build](https://img.shields.io/badge/Build-Maven-orange?logo=apache-maven&logoColor=white) ![UI](https://img.shields.io/badge/UI-Java%20Swing-red) ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## 📖 Visão Geral
 
-Este projeto é um **Simulador de Hidrômetro Analógico** desenvolvido em Java, utilizando Programação Orientada a Objetos e uma interface gráfica com **Java Swing**. O objetivo é fornecer uma representação visual interativa e funcional de um hidrômetro, que pode ser integrada a outros softwares ou usada para testes e demonstrações, eliminando a necessidade de um dispositivo físico.
+Este projeto é um **Simulador de Hidrômetro Digital Interativo** desenvolvido em Java. O objetivo é fornecer uma representação visual e funcional de um hidrômetro, permitindo que o usuário **controle a vazão de água em tempo real** sem interromper a execução.
 
-O simulador carrega configurações de um arquivo de propriedades, opera de forma contínua com uma lógica de simulação em uma thread separada, e exibe os dados em uma GUI que imita um medidor real. Adicionalmente, o sistema captura e salva imagens da sua própria interface em intervalos regulares, criando um histórico visual das leituras.
+O simulador carrega configurações de um arquivo de propriedades, opera de forma contínua com uma lógica de simulação em uma thread separada, e exibe os dados em uma interface gráfica (GUI) que imita um medidor real. A principal funcionalidade desta versão é o **salvamento automático de medições**: o sistema captura uma imagem da GUI a cada metro cúbico (m³) de água consumido e a organiza em um diretório específico, criando um histórico visual das medições.
 
 ## ✨ Funcionalidades Principais
 
--   **Interface Gráfica Interativa:** Exibe a leitura, vazão e pressão em um painel visual que imita um hidrômetro real, com ponteiros animados e dígitos formatados individualmente.
--   **Simulação Detalhada:** Contabiliza o volume de água consumido (m³) e simula a variação de vazão e pressão na rede.
+-   **Controle Interativo da Vazão:** O usuário pode aumentar ou diminuir a vazão média da água através de botões na interface, e a simulação se ajusta instantaneamente.
+-   **Salvamento Condicional de Medições:** A cada metro cúbico (m³) completado, uma imagem (`.jpeg`) do estado exato do medidor é salva automaticamente.
+-   **Interface Gráfica com Animações:** Exibe a leitura, vazão e pressão em um painel visual que imita um hidrômetro real, com ponteiros animados.
+-   **Organização de Arquivos:** As medições salvas são organizadas em um diretório com nome customizável (`Medições_[Matrícula]`). Os arquivos de imagem são nomeados ciclicamente de `01.jpeg` a `99.jpeg`.
 -   **Simulação de Eventos:** Modela eventos aleatórios como **Falta de Água** e **Presença de Ar na Tubulação**, com feedback visual e no console.
--   **Captura de Tela Automática:** A GUI é capturada e salva automaticamente como imagens (PNG/JPEG) em um diretório configurável, registrando o estado do hidrômetro ao longo do tempo.
--   **Configuração Externa:** Todos os parâmetros da simulação são facilmente ajustáveis através de um arquivo `parametros.properties`, sem necessidade de recompilar o código.
--   **Log de Console:** Gera logs detalhados no console, mostrando o estado da rede a cada ciclo da simulação.
+-   **Configuração Externa:** Parâmetros da simulação (vazão inicial, matrícula, etc.) são ajustáveis via arquivo `.properties`.
+-   **Log de Console:** Gera logs detalhados no console, mostrando o estado da rede a cada ciclo.
 
 ---
 
@@ -23,54 +24,64 @@ O simulador carrega configurações de um arquivo de propriedades, opera de form
 
 ### Interface Gráfica (GUI)
 
-A simulação é exibida em tempo real em uma janela, com a leitura numérica e os ponteiros animados para litros, vazão e pressão.
+A simulação é exibida em tempo real, incluindo o novo painel de controle para ajustar a vazão média.
 
-<p align="center">
-  <img src="docs/images/gui_exemplo.png" alt="gui_exemplo" width="500"/>
-</p>
+![Exemplo da Interface Gráfica v2.0](docs/images/gui_exemplo.png)
+
+### Arquivos Salvos
+
+A cada m³ completado, uma imagem é salva no diretório `Medições_[SuaMatricula]`, com nomes de arquivo que se repetem após 99, sobrescrevendo os antigos.
+
+```
+Medições_202310980012/
+├── 01.jpeg  (salvo quando a leitura atingiu 1 m³)
+├── 02.jpeg  (salvo quando a leitura atingiu 2 m³)
+...
+└── 99.jpeg  (salvo quando a leitura atingiu 99 m³)
+(quando atingir 100 m³, o arquivo 01.jpeg será sobrescrito)
+```
 
 ### Saída do Console
 
-Paralelamente à GUI, o simulador gera logs no console, detalhando o estado da rede a cada ciclo. Isso é útil para depuração e para o uso do simulador em sistemas que não necessitam da interface visual.
+O console exibe logs detalhados, incluindo as notificações de salvamento de imagem e os ajustes manuais de vazão.
 
-<p align="center">
-  <img src="docs/images/console_output_v2.png" alt="console_output" width="500"/>
-</p>
+```console
+Simulador iniciado. Feche a janela para parar.
+Leitura: 0.998 m³ | Vazão: 19.85 m³/h | Pressão: 2.1 bar | Status: NORMAL
+--- IMAGEM SALVA: Medição de 1 m³ completada. ---
+Leitura: 1.003 m³ | Vazão: 20.15 m³/h | Pressão: 2.2 bar | Status: NORMAL
+>> Vazão Média ajustada para: 21.00 m³/h
+Leitura: 1.009 m³ | Vazão: 21.40 m³/h | Pressão: 2.3 bar | Status: AR NA TUBULAÇÃO
+```
+
+---
 
 ## 🛠️ Tecnologias Utilizadas
 
 -   **Java 11+**
--   **Java Swing** para a Interface Gráfica (GUI)
--   **Apache Maven** para gerenciamento do projeto e dependências
+-   **Java Swing** para a Interface Gráfrica
+-   **Apache Maven** para gerenciamento do projeto
 
 ---
 
 ## 📂 Estrutura do Projeto
 
-O projeto utiliza a estrutura padrão do Maven, que organiza o código-fonte, os recursos e os testes de forma clara.
-
 ```
 simulador-hidrometro/
 ├── docs/
 │   └── images/
-│       └── gui_exemplo.png      # Imagem de exemplo para o README
-├── out/
-│   └── imagens_geradas/         # Diretório de saída para as imagens capturadas
+│       └── gui_exemplo.png
+├── Medições_202310980012/  <-- Diretório de saída criado em tempo de execução
+│   ├── 01.jpeg
+│   └── ...
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── br.com.hidrometro/  # Pacote raiz do código-fonte
-│   │   │       ├── model/
-│   │   │       ├── util/
-│   │   │       ├── view/
-│   │   │       ├── Main.java
-│   │   │       └── Simulador.java
-│   │   └── resources/              # Recursos do projeto
+│   │   │   └── br/com/hidrometro/
+│   │   └── resources/
 │   │       ├── config/
-│   │       │   └── parametros.properties # Arquivo de configuração
-│   │       └── hidrometro.png      # Imagem de fundo da GUI
-├── .gitignore
-├── pom.xml                         # Arquivo de configuração do Maven
+│   │       │   └── parametros.properties
+│   │       └── hidrometro.png
 └── README.md
 ```
 
@@ -88,55 +99,38 @@ simulador-hidrometro/
 1.  **Clone o Repositório:**
     ```bash
     git clone [URL_DO_SEU_REPOSITORIO] simulador-hidrometro
-    cd simulador-hidrometro
     ```
-
-2.  **Abra no IntelliJ IDEA:**
-    -   Abra o IntelliJ e selecione `File > Open...`.
-    -   Navegue até a pasta `simulador-hidrometro` e a selecione.
-    -   A IDE detectará o arquivo `pom.xml` e configurará o projeto Maven automaticamente.
-
-3.  **Verifique os Recursos:**
-    -   Certifique-se de que `hidrometro.png` esteja em `src/main/resources/`.
-    -   Certifique-se de que `parametros.properties` esteja em `src/main/resources/config/`.
-
+2.  **Abra no IntelliJ IDEA:** A IDE detectará o arquivo `pom.xml` e configurará o projeto.
+3.  **Configure a Simulação:**
+    -   Abra o arquivo `src/main/resources/config/parametros.properties`.
+    -   **Importante:** Altere o valor da chave `matricula.suap` para a sua matrícula.
 4.  **Execute:**
-    -   Encontre o arquivo `Main.java` (`src/main/java/br/com/hidrometro/Main.java`).
-    -   Clique com o botão direito sobre ele e selecione `Run 'Main.main()'`.
-
-5.  **Observe a Saída:**
-    -   A janela da **interface gráfica** será exibida.
-    -   O **console** da IDE mostrará os logs de status.
-    -   As **capturas de tela** serão salvas na pasta `out/imagens_geradas/`.
+    -   Encontre e execute o método `main` na classe `Main.java`.
+5.  **Observe e Interaja:**
+    -   A janela da GUI será exibida.
+    -   Use os botões `+` e `-` para controlar a vazão média em tempo real.
+    -   Observe o console para ver os logs.
+    -   Verifique a pasta raiz do projeto: um novo diretório `Medições_[SuaMatricula]` será criado e preenchido com as imagens `.jpeg` a cada metro cúbico.
 
 ---
 
-## ⚙️ Configuração
+## ⚙️ Configuração (`parametros.properties`)
 
 O comportamento do simulador é controlado pelo arquivo `src/main/resources/config/parametros.properties`.
 
 ```properties
-# Parâmetros de Simulação do Hidrômetro
+# Parâmetros de Simulação do Hidrômetro (v2.0)
 
-# Vazão média da água em m³/hora.
+# Vazão média inicial da água em m³/hora. Pode ser alterada em tempo real pela GUI.
 vazao.media=20.0
 
 # Pressão média da água em bar.
 pressao.media=2.0
 
-# Caminho para salvar as imagens capturadas (relativo à raiz do projeto).
-path.saida.imagens=out/imagens_geradas/
+# Intervalo em segundos para a atualização da GUI. Um valor menor (ex: 1) deixa a animação mais fluida.
+intervalo.geracao.imagem.segundos=1
 
-# Prefixo do nome do arquivo de imagem.
-prefixo.nome.imagem=leitura_
-
-# Formato da imagem (png ou jpg).
-formato.imagem=png
-
-# Intervalo em segundos para a atualização e captura da GUI.
-intervalo.geracao.imagem.segundos=2
-
-# Probabilidade de ocorrer falta de água a cada ciclo (0.0 = 0%, 1.0 = 100%).
+# Probabilidade de ocorrer falta de água a cada ciclo (0.01 = 1%).
 probabilidade.falta.de.agua=0.01
 
 # Probabilidade de ter ar na tubulação a cada ciclo.
@@ -144,21 +138,77 @@ probabilidade.presenca.de.ar=0.05
 
 # Fator multiplicador para o consumo quando há ar (1.3 = 30% a mais).
 fator.consumo.com.ar=1.3
+
+# Sua matrícula SUAP, usada para nomear o diretório de saída das medições.
+matricula.suap=202310980012
 ```
 
 ---
 
 ## 📈 Arquitetura e Diagrama de Classes (UML)
 
-A arquitetura do software segue o princípio da separação de responsabilidades, dividindo o código em `model` (lógica de negócio), `view` (GUI e captura) e `util` (configuração), orquestrados pelo `Simulador`.
+A arquitetura foi atualizada para refletir a **associação bidirecional** entre o `Simulador` (controlador) e a `HidrometroGUI` (visão), permitindo a interatividade em tempo real.
 
-![Diagrama de Classes](UMLHidrômetro.png)
+![Diagrama de Classes v2.0](https://i.imgur.com/L12sE0n.png)
 
+<details>
+<summary>Clique aqui para ver o código PlantUML do diagrama</summary>
+
+```plantuml
+@startuml
+title Diagrama de Classes - Simulador de Hidrômetro (v3.0)
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Main {
+  + {static} main(String[] args): void
+}
+class Simulador {
+  - config: Configuracao
+  - rede: RedeHidraulica
+  - hidrometro: Hidrometro
+  - displayCaptura: Display
+  - tela: HidrometroGUI
+  + Simulador()
+  + iniciar(): void
+  + solicitarAumentoVazao(inc: double): void
+  + solicitarDiminuicaoVazao(dec: double): void
+}
+class RedeHidraulica {
+  - vazaoMediaAtual: double
+  + {method} aumentarVazaoMedia(inc: double): void
+  + {method} diminuirVazaoMedia(dec: double): void
+  + atualizarEstado(): void
+}
+class HidrometroGUI extends JFrame {
+  + HidrometroGUI(simulador: Simulador)
+  + atualizarDados(leitura: double, ...): void
+  + getMedidorPanel(): MedidorPanel
+}
+class Display {
+  + capturarTela(panel: JPanel): BufferedImage
+  + salvarImagemMetroCubico(img: BufferedImage, m3: int): void
+}
+
+Main ..> Simulador : <<cria e inicia>>
+Simulador "1" -- "1" HidrometroGUI : <<controla e é controlado>>
+Simulador *-- "1" Configuracao
+Simulador *-- "1" RedeHidraulica
+Simulador *-- "1" Hidrometro
+Simulador *-- "1" Display
+HidrometroGUI o-- "HidrometroGUI.MedidorPanel"
+HidrometroGUI ..> Simulador : <<solicitaAumento/Diminuição>>
+Display ..> JPanel : <<capturaTela()>>
+@enduml
 ```
-Créditos
+</details>
 
-- Estudante/desenvolvedor:
-Cefras José Ferreira Mandú de Almeida
+---
 
-- Professor responsável:
-Katyusco de Farias Santos
+## 🤝 Contribuições
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir *Issues* para relatar bugs ou sugerir melhorias, e *Pull Requests* para propor mudanças no código.
+
+## 📄 Licença
+
+Este projeto está licenciado sob a **Licença MIT**.
