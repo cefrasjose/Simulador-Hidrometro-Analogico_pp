@@ -4,7 +4,7 @@
 
 ## 📖 Visão Geral
 
-Este projeto é um **Simulador de Hidrômetro Digital Interativo** desenvolvido em Java. O objetivo é fornecer uma representação visual e funcional de um hidrômetro, permitindo que o usuário **controle a vazão de água em tempo real** sem interromper a execução.
+Este projeto é um **Simulador de Hidrômetro Analógico Digital Interativo** desenvolvido em Java. O objetivo é fornecer uma representação visual e funcional de um hidrômetro, permitindo que o usuário **controle a vazão de água em tempo real** sem interromper a execução.
 
 O simulador carrega configurações de um arquivo de propriedades, opera de forma contínua com uma lógica de simulação em uma thread separada, e exibe os dados em uma interface gráfica (GUI) que imita um medidor real. A principal funcionalidade desta versão é o **salvamento automático de medições**: o sistema captura uma imagem da GUI a cada metro cúbico (m³) de água consumido e a organiza em um diretório específico, criando um histórico visual das medições.
 
@@ -132,7 +132,7 @@ probabilidade.presenca.de.ar=0.05
 # Fator multiplicador para o consumo quando há ar (1.3 = 30% a mais).
 fator.consumo.com.ar=1.3
 
-# Sua matrícula SUAP, usada para nomear o diretório de saída das medições.
+# Matrícula SUAP, usada para nomear o diretório de saída das medições.
 matricula.suap=202310980012
 ```
 
