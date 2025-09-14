@@ -26,7 +26,7 @@ O simulador carrega configurações de um arquivo de propriedades, opera de form
 
 A simulação é exibida em tempo real, incluindo o novo painel de controle para ajustar a vazão média.
 
-![Exemplo da Interface Gráfica v2.0](docs/images/gui_exemplo.png)
+![Exemplo da Interface Gráfica v2.0](docs/images/gui_exemplo_v2.png)
 
 ### Arquivos Salvos
 
@@ -45,14 +45,7 @@ Medições_202310980012/
 
 O console exibe logs detalhados, incluindo as notificações de salvamento de imagem e os ajustes manuais de vazão.
 
-```console
-Simulador iniciado. Feche a janela para parar.
-Leitura: 0.998 m³ | Vazão: 19.85 m³/h | Pressão: 2.1 bar | Status: NORMAL
---- IMAGEM SALVA: Medição de 1 m³ completada. ---
-Leitura: 1.003 m³ | Vazão: 20.15 m³/h | Pressão: 2.2 bar | Status: NORMAL
->> Vazão Média ajustada para: 21.00 m³/h
-Leitura: 1.009 m³ | Vazão: 21.40 m³/h | Pressão: 2.3 bar | Status: AR NA TUBULAÇÃO
-```
+![Exemplo da saída do console v2.0](docs/images/console_output_v2.png)
 
 ---
 
@@ -149,66 +142,13 @@ matricula.suap=202310980012
 
 A arquitetura foi atualizada para refletir a **associação bidirecional** entre o `Simulador` (controlador) e a `HidrometroGUI` (visão), permitindo a interatividade em tempo real.
 
-![Diagrama de Classes v2.0](https://i.imgur.com/L12sE0n.png)
+![Diagrama de Classes v2.0](Diagrama de classes hidrometro_Cefras MandúPP_2025.2.png)
 
-<details>
-<summary>Clique aqui para ver o código PlantUML do diagrama</summary>
-
-```plantuml
-@startuml
-title Diagrama de Classes - Simulador de Hidrômetro (v3.0)
-skinparam classAttributeIconSize 0
-skinparam linetype ortho
-
-class Main {
-  + {static} main(String[] args): void
-}
-class Simulador {
-  - config: Configuracao
-  - rede: RedeHidraulica
-  - hidrometro: Hidrometro
-  - displayCaptura: Display
-  - tela: HidrometroGUI
-  + Simulador()
-  + iniciar(): void
-  + solicitarAumentoVazao(inc: double): void
-  + solicitarDiminuicaoVazao(dec: double): void
-}
-class RedeHidraulica {
-  - vazaoMediaAtual: double
-  + {method} aumentarVazaoMedia(inc: double): void
-  + {method} diminuirVazaoMedia(dec: double): void
-  + atualizarEstado(): void
-}
-class HidrometroGUI extends JFrame {
-  + HidrometroGUI(simulador: Simulador)
-  + atualizarDados(leitura: double, ...): void
-  + getMedidorPanel(): MedidorPanel
-}
-class Display {
-  + capturarTela(panel: JPanel): BufferedImage
-  + salvarImagemMetroCubico(img: BufferedImage, m3: int): void
-}
-
-Main ..> Simulador : <<cria e inicia>>
-Simulador "1" -- "1" HidrometroGUI : <<controla e é controlado>>
-Simulador *-- "1" Configuracao
-Simulador *-- "1" RedeHidraulica
-Simulador *-- "1" Hidrometro
-Simulador *-- "1" Display
-HidrometroGUI o-- "HidrometroGUI.MedidorPanel"
-HidrometroGUI ..> Simulador : <<solicitaAumento/Diminuição>>
-Display ..> JPanel : <<capturaTela()>>
-@enduml
 ```
-</details>
+Créditos
 
----
+- Estudante/desenvolvedor:
+Cefras José Ferreira Mandú de Almeida
 
-## 🤝 Contribuições
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir *Issues* para relatar bugs ou sugerir melhorias, e *Pull Requests* para propor mudanças no código.
-
-## 📄 Licença
-
-Este projeto está licenciado sob a **Licença MIT**.
+- Professor responsável:
+Katyusco de Farias Santos
