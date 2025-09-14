@@ -26,7 +26,9 @@ O simulador carrega configurações de um arquivo de propriedades, opera de form
 
 A simulação é exibida em tempo real, incluindo o novo painel de controle para ajustar a vazão média.
 
-![Exemplo da Interface Gráfica v2.0](docs/images/gui_exemplo_v2.png)
+<p align="center">
+  <img src="docs/images/gui_exemplo_v2.png" alt="gui_exemplo" width="500"/>
+</p>
 
 ### Arquivos Salvos
 
@@ -45,7 +47,9 @@ Medições_202310980012/
 
 O console exibe logs detalhados, incluindo as notificações de salvamento de imagem e os ajustes manuais de vazão.
 
-![Exemplo da saída do console v2.0](docs/images/console_output_v2.png)
+<p align="center">
+  <img src="docs/images/console_output_v2.png" alt="console_output" width="500"/>
+</p>
 
 ---
 
