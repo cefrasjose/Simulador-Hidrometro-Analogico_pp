@@ -28,7 +28,7 @@ public class RedeHidraulica {
     }
 
     public synchronized void diminuirVazaoMedia(double incremento) {
-        this.vazaoMediaAtual = Math.max(0, this.vazaoMediaAtual - incremento); //nao permite vazao negativa
+        this.vazaoMediaAtual = Math.min(100.0, this.vazaoMediaAtual + incremento); //nao permite vazao negativa
         System.out.printf(">> Vazão Média ajustada para: %.2f m³/h\n", this.vazaoMediaAtual);
     }
 
@@ -53,7 +53,7 @@ public class RedeHidraulica {
 
         //simula variacao na vazao usando o atributo vazaoMediaAtual
         double variacaoVazao = (random.nextDouble() - 0.5) * (this.vazaoMediaAtual * 0.3);
-        this.vazaoAtual = Math.max(0, this.vazaoMediaAtual + variacaoVazao);
+        this.vazaoAtual = Math.max(0, Math.min(100.0, this.vazaoMediaAtual + variacaoVazao));
 
         double pressaoMedia = config.getDouble("pressao.media");
         double variacaoPressao = (random.nextDouble() - 0.5) * (pressaoMedia * 0.2);
