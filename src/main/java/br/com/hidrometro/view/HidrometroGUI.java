@@ -21,7 +21,7 @@ public class HidrometroGUI extends JFrame {
 
     public HidrometroGUI(Simulador simulador) {
         setTitle("Hidrômetro Digital");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(500, 650);
         setLocationRelativeTo(null);
 

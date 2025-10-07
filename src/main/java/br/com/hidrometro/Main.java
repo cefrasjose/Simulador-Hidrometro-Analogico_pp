@@ -8,8 +8,8 @@ public class Main {
         // garante a criacao da GUI e o inicio do simulador ocorram na Thread de Eventos do Swing
 
         SwingUtilities.invokeLater(() -> {
-            Simulador simulador = new Simulador();
-            simulador.iniciar();
+            GerenciadorSimuladores gerenciador = new GerenciadorSimuladores();
+            gerenciador.setVisible(true);
         });
     }
 }
