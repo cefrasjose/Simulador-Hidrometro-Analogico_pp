@@ -15,10 +15,9 @@ public class Display {
 
     private final String pathSaidaCondicional; // caminho para a pasta "Medições_MATRICULA"
 
-    public Display(Configuracao config) {
-        //constroi o nome do diretorio de saída com base na matricula
+    public Display(Configuracao config, int idHidrometro) {
         String matricula = config.getString("matricula.suap");
-        this.pathSaidaCondicional = "Medições_" + matricula;
+        this.pathSaidaCondicional = "Medições_" + matricula + "/Hidrômetro_" + idHidrometro;
 
         try {
             Files.createDirectories(Paths.get(this.pathSaidaCondicional));

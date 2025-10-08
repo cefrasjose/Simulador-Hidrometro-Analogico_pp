@@ -16,26 +16,42 @@ public class Simulador {
     private volatile boolean rodando = false;
     private Thread threadSimulacao;
     private HidrometroGUI tela;
+    private final int idHidrometro;
+    private Runnable onClose; // callback que o gerenciador vai definir
 
     private int ultimoMetroCubicoSalvo = 0;
 
-    public Simulador() {
+    public Simulador(int idHidrometro) {
+        this.idHidrometro = idHidrometro;
         this.config = new Configuracao("config/parametros.properties");
         this.rede = new RedeHidraulica(config);
         this.hidrometro = new Hidrometro();
-        this.displayCaptura = new Display(config);
+        this.displayCaptura = new Display(config, idHidrometro);
     }
 
     public void iniciar() {
         if (rodando) return;
         rodando = true;
         tela = new HidrometroGUI(this);
+
+        // ⚡ Quando a janela for fechada, parar o simulador e avisar o gerenciador
+        tela.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                parar();
+                if (onClose != null) {
+                    onClose.run(); // notifica o Gerenciador
+                }
+            }
+        });
+
         SwingUtilities.invokeLater(() -> tela.setVisible(true));
 
         threadSimulacao = new Thread(this::loopSimulacao);
         threadSimulacao.start();
         System.out.println("Simulador iniciado. Feche a janela para parar.");
     }
+
 
     public void solicitarAumentoVazao(double incremento) {
         rede.aumentarVazaoMedia(incremento);
@@ -84,10 +100,10 @@ public class Simulador {
 
                 BufferedImage screenshot = displayCaptura.capturarTela(tela.getMedidorPanel());
                 displayCaptura.salvarImagemMetroCubico(screenshot, metroCubicoAtual);
-                System.out.println("--- IMAGEM SALVA: Medição de " + metroCubicoAtual + " m³ completada. ---");
+                System.out.println("--- IMAGEM DO HIDROMETRO "+ idHidrometro+ "SALVA: Medição de " + metroCubicoAtual + " m³ completada. ---");
             }
 
-            System.out.printf("Leitura: %.3f m³ | Vazão: %.2f m³/h | Pressão: %.1f bar | Status: %s\n",
+            System.out.printf("Hidrometro " + idHidrometro + ", leitura: %.3f m³ | Vazão: %.2f m³/h | Pressão: %.1f bar | Status: %s\n",
                     hidrometro.getVolumeConsumidoM3(),
                     rede.getVazaoAtual(),
                     rede.getPressaoAtual(),
@@ -105,4 +121,9 @@ public class Simulador {
             }
         }
     }
+
+    public void setOnClose(Runnable onClose) {
+        this.onClose = onClose;
+    }
+
 }
