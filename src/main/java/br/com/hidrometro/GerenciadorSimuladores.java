@@ -2,7 +2,6 @@ package br.com.hidrometro;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,14 +13,12 @@ public class GerenciadorSimuladores extends JFrame {
 
     private final JButton btnNovoSimulador = new JButton("Novo Simulador");
     private final JButton btnFecharTodos = new JButton("Fechar Todos");
-    private final JLabel lblStatus = new JLabel("Simuladores ativos: 0 / " + LIMITE_SIMULADORES);
+    private final JLabel lblStatus = new JLabel();
 
     public GerenciadorSimuladores() {
         super("Gerenciador de Simuladores de Hidrômetro");
 
-        for (int i = 1; i <= LIMITE_SIMULADORES; i++) {
-            idsDisponiveis.add(i);
-        }
+        for (int i = 1; i <= LIMITE_SIMULADORES; i++) idsDisponiveis.add(i);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 200);
@@ -36,54 +33,86 @@ public class GerenciadorSimuladores extends JFrame {
 
         btnNovoSimulador.addActionListener(e -> criarSimulador());
         btnFecharTodos.addActionListener(e -> fecharTodosSimuladores());
+
+        atualizarStatus();
     }
 
-    private void criarSimulador() {
+    /**
+     * Cria um novo simulador e o inicia.
+     */
+    public synchronized Simulador criarSimulador() {
         if (idsDisponiveis.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Limite máximo de " + LIMITE_SIMULADORES + " simuladores atingido.",
+                    "Limite máximo de simuladores atingido.",
                     "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
+            return null;
         }
 
-        int idHidrometro = idsDisponiveis.remove(0);
-        Simulador simulador = new Simulador(idHidrometro);
-        simuladores.add(simulador);
+        int id = idsDisponiveis.remove(0);
+        Simulador sim = new Simulador(id);
+        registrarSimulador(id, sim);
 
-        // 👇 define o callback quando o simulador for fechado
+        sim.iniciar();
+        return sim;
+    }
+
+    /**
+     * Fecha todos os simuladores ativos.
+     */
+    public synchronized void fecharTodosSimuladores() {
+        new ArrayList<>(simuladores).forEach(Simulador::parar);
+        simuladores.clear();
+        idsDisponiveis.clear();
+        for (int i = 1; i <= LIMITE_SIMULADORES; i++) idsDisponiveis.add(i);
+        atualizarStatus();
+    }
+
+    /**
+     * Busca um simulador específico pelo ID.
+     */
+    public synchronized Simulador getSimuladorPorId(int id) {
+        for (Simulador s : simuladores) {
+            if (s.getIdHidrometro() == id) return s;
+        }
+        return null;
+    }
+
+    /**
+     * Retorna o próximo ID livre disponível.
+     */
+    public synchronized int getProximoIdDisponivel() {
+        if (idsDisponiveis.isEmpty()) return -1;
+        return idsDisponiveis.get(0);
+    }
+
+    /**
+     * Registra um simulador criado (usado pela Facade).
+     */
+    public synchronized void registrarSimulador(int id, Simulador simulador) {
+        simuladores.add(simulador);
+        idsDisponiveis.remove((Integer) id);
+
         simulador.setOnClose(() -> {
-            simulador.parar();
-            simuladores.remove(simulador);
-            idsDisponiveis.add(idHidrometro);
-            idsDisponiveis.sort(Integer::compareTo);
+            removerSimulador(id);
             atualizarStatus();
-            System.out.println("IDs disponíveis: " + idsDisponiveis);
         });
 
-        simulador.iniciar();
         atualizarStatus();
     }
 
-
-
-    private void fecharTodosSimuladores() {
-        for (Simulador s : new ArrayList<>(simuladores)) {
-            s.parar();
-        }
-
-        for (Frame f : Frame.getFrames()) {
-            if (f instanceof JFrame
-                    && f.isVisible()
-                    && f != this
-                    && f.getTitle().contains("Hidrômetro")) {
-                f.dispose();
-            }
-        }
-
-        simuladores.clear();
+    /**
+     * Remove um simulador pelo ID (usado pela Facade).
+     */
+    public synchronized void removerSimulador(int id) {
+        simuladores.removeIf(s -> s.getIdHidrometro() == id);
+        if (!idsDisponiveis.contains(id)) idsDisponiveis.add(id);
+        idsDisponiveis.sort(Integer::compareTo);
         atualizarStatus();
     }
 
+    /**
+     * Atualiza o texto de status na interface.
+     */
     private void atualizarStatus() {
         lblStatus.setText("Simuladores ativos: " + simuladores.size() + " / " + LIMITE_SIMULADORES);
     }

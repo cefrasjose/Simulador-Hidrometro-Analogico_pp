@@ -1,15 +1,15 @@
 package br.com.hidrometro;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-
-        // garante a criacao da GUI e o inicio do simulador ocorram na Thread de Eventos do Swing
-
         SwingUtilities.invokeLater(() -> {
-            GerenciadorSimuladores gerenciador = new GerenciadorSimuladores();
-            gerenciador.setVisible(true);
+            FacadeSHA facade = FacadeSHA.getInstancia();
+            facade.getGerenciador().setVisible(true);
         });
+
+        Thread cliThread = new Thread(ClienteCLI::start);
+        cliThread.start();
     }
 }

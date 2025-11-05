@@ -17,9 +17,9 @@ public class Simulador {
     private Thread threadSimulacao;
     private HidrometroGUI tela;
     private final int idHidrometro;
-    private Runnable onClose; // callback que o gerenciador vai definir
-
+    private Runnable onClose;
     private int ultimoMetroCubicoSalvo = 0;
+    private boolean gerarImagens = true;
 
     public Simulador(int idHidrometro) {
         this.idHidrometro = idHidrometro;
@@ -34,24 +34,19 @@ public class Simulador {
         rodando = true;
         tela = new HidrometroGUI(this);
 
-        // ⚡ Quando a janela for fechada, parar o simulador e avisar o gerenciador
         tela.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent e) {
                 parar();
-                if (onClose != null) {
-                    onClose.run(); // notifica o Gerenciador
-                }
             }
         });
 
         SwingUtilities.invokeLater(() -> tela.setVisible(true));
-
         threadSimulacao = new Thread(this::loopSimulacao);
         threadSimulacao.start();
-        System.out.println("Simulador iniciado. Feche a janela para parar.");
-    }
 
+        System.out.println("Simulador " + idHidrometro + " iniciado.");
+    }
 
     public void solicitarAumentoVazao(double incremento) {
         rede.aumentarVazaoMedia(incremento);
@@ -61,12 +56,26 @@ public class Simulador {
         rede.diminuirVazaoMedia(incremento);
     }
 
+    public void setGerarImagens(boolean gerar) {
+        this.gerarImagens = gerar;
+        System.out.println("Simulador " + idHidrometro + " - geração de imagens: " + (gerar ? "HABILITADA" : "DESABILITADA"));
+    }
+
+    public boolean isGerarImagens() {
+        return gerarImagens;
+    }
+
     public void parar() {
+        if (!rodando) return;
         rodando = false;
+        if (tela != null) {
+            tela.dispose();
+        }
+        if (onClose != null) onClose.run();
+        System.out.println("Simulador " + idHidrometro + " encerrado.");
     }
 
     private void loopSimulacao() {
-        //intervalo em segundos (int) e em milissegundos (long)
         int intervaloSeg = config.getInt("intervalo.geracao.imagem.segundos");
         long intervaloMiliseg = intervaloSeg * 1000L;
         double fatorAr = config.getDouble("fator.consumo.com.ar");
@@ -75,8 +84,6 @@ public class Simulador {
             long tempoInicio = System.currentTimeMillis();
 
             rede.atualizarEstado();
-
-            // passa 'intervaloSeg' (int) para o metodo, como ele espera.
             hidrometro.registrarConsumo(rede.getVazaoAtual(), intervaloSeg, rede.temAr(), fatorAr);
 
             var status = "NORMAL";
@@ -92,18 +99,18 @@ public class Simulador {
             );
 
             int metroCubicoAtual = (int) hidrometro.getVolumeConsumidoM3();
-            if (metroCubicoAtual > ultimoMetroCubicoSalvo && metroCubicoAtual > 0) {
+            if (gerarImagens && metroCubicoAtual > ultimoMetroCubicoSalvo && metroCubicoAtual > 0) {
                 ultimoMetroCubicoSalvo = metroCubicoAtual;
-
                 tela.revalidate();
                 tela.repaint();
 
                 BufferedImage screenshot = displayCaptura.capturarTela(tela.getMedidorPanel());
                 displayCaptura.salvarImagemMetroCubico(screenshot, metroCubicoAtual);
-                System.out.println("--- IMAGEM DO HIDROMETRO "+ idHidrometro+ "SALVA: Medição de " + metroCubicoAtual + " m³ completada. ---");
+                System.out.println("[Simulador " + idHidrometro + "] Imagem salva: " + metroCubicoAtual + " m³");
             }
 
-            System.out.printf("Hidrometro " + idHidrometro + ", leitura: %.3f m³ | Vazão: %.2f m³/h | Pressão: %.1f bar | Status: %s\n",
+            System.out.printf("[Simulador %d] Leitura: %.3f m³ | Vazão: %.2f m³/h | Pressão: %.1f bar | Status: %s%n",
+                    idHidrometro,
                     hidrometro.getVolumeConsumidoM3(),
                     rede.getVazaoAtual(),
                     rede.getPressaoAtual(),
@@ -126,4 +133,7 @@ public class Simulador {
         this.onClose = onClose;
     }
 
+    public int getIdHidrometro() {
+        return idHidrometro;
+    }
 }
