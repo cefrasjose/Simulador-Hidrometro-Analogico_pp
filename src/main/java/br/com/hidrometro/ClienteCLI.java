@@ -44,10 +44,8 @@ public class ClienteCLI {
                 }
                 case 0 -> {
                     System.err.println("Encerrando Cliente CLI...");
-                    // pede à facade que finalize todos os simuladores
                     facade.encerrarSistema();
 
-                    // espera um breve instante para threads receberem o sinal (opcional)
                     try {
                         Thread.sleep(300); // 300ms
                     } catch (InterruptedException ignored) {}

@@ -3,9 +3,7 @@ package br.com.hidrometro;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Fachada Singleton para controlar o SHA (Simulador de Hidrômetros Automáticos)
- */
+
 public class FacadeSHA {
 
     private static FacadeSHA instancia;
@@ -31,13 +29,11 @@ public class FacadeSHA {
         return gerenciador;
     }
 
-    // 1️⃣ Define configurações globais
     public void configSimuladorSHA(int intervaloSegundos) {
         this.intervaloSimulacao = intervaloSegundos;
         System.out.println("[FachadaSHA] Configuração global: intervalo = " + intervaloSegundos + "s");
     }
 
-    // 2️⃣ Cria e registra um novo simulador automaticamente
     public void criaSHA() {
         int idDisponivel = gerenciador.getProximoIdDisponivel();
         if (idDisponivel == -1) {
@@ -53,7 +49,6 @@ public class FacadeSHA {
         System.out.println("[FachadaSHA] Simulador " + idDisponivel + " criado e iniciado.");
     }
 
-    // 3️⃣ Finaliza um simulador específico
     public void finalizaSHA(int id) {
         Simulador sim = simuladores.remove(id);
         if (sim != null) {
@@ -65,7 +60,6 @@ public class FacadeSHA {
         }
     }
 
-    // 4️⃣ Modifica a vazão de um simulador específico
     public void modificaVazaoSHA(int id, double novaVazao) {
         Simulador sim = simuladores.get(id);
         if (sim != null) {
@@ -76,7 +70,6 @@ public class FacadeSHA {
         }
     }
 
-    // 5️⃣ Habilita ou desabilita a geração de imagens para um simulador específico
     public void habilitaGeracaoImagemSHA(int id, boolean habilitar) {
         Simulador sim = simuladores.get(id);
         if (sim != null) {
@@ -88,7 +81,6 @@ public class FacadeSHA {
         }
     }
 
-    // 🔚 Encerra todos os simuladores
     public void encerrarSistema() {
         simuladores.values().forEach(Simulador::parar);
         simuladores.clear();

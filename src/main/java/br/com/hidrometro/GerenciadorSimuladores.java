@@ -37,9 +37,6 @@ public class GerenciadorSimuladores extends JFrame {
         atualizarStatus();
     }
 
-    /**
-     * Cria um novo simulador e o inicia.
-     */
     public synchronized Simulador criarSimulador() {
         if (idsDisponiveis.isEmpty()) {
             JOptionPane.showMessageDialog(this,
@@ -56,9 +53,6 @@ public class GerenciadorSimuladores extends JFrame {
         return sim;
     }
 
-    /**
-     * Fecha todos os simuladores ativos.
-     */
     public synchronized void fecharTodosSimuladores() {
         new ArrayList<>(simuladores).forEach(Simulador::parar);
         simuladores.clear();
@@ -67,9 +61,6 @@ public class GerenciadorSimuladores extends JFrame {
         atualizarStatus();
     }
 
-    /**
-     * Busca um simulador específico pelo ID.
-     */
     public synchronized Simulador getSimuladorPorId(int id) {
         for (Simulador s : simuladores) {
             if (s.getIdHidrometro() == id) return s;
@@ -77,17 +68,11 @@ public class GerenciadorSimuladores extends JFrame {
         return null;
     }
 
-    /**
-     * Retorna o próximo ID livre disponível.
-     */
     public synchronized int getProximoIdDisponivel() {
         if (idsDisponiveis.isEmpty()) return -1;
         return idsDisponiveis.get(0);
     }
 
-    /**
-     * Registra um simulador criado (usado pela Facade).
-     */
     public synchronized void registrarSimulador(int id, Simulador simulador) {
         simuladores.add(simulador);
         idsDisponiveis.remove((Integer) id);
@@ -100,9 +85,6 @@ public class GerenciadorSimuladores extends JFrame {
         atualizarStatus();
     }
 
-    /**
-     * Remove um simulador pelo ID (usado pela Facade).
-     */
     public synchronized void removerSimulador(int id) {
         simuladores.removeIf(s -> s.getIdHidrometro() == id);
         if (!idsDisponiveis.contains(id)) idsDisponiveis.add(id);
@@ -110,9 +92,6 @@ public class GerenciadorSimuladores extends JFrame {
         atualizarStatus();
     }
 
-    /**
-     * Atualiza o texto de status na interface.
-     */
     private void atualizarStatus() {
         lblStatus.setText("Simuladores ativos: " + simuladores.size() + " / " + LIMITE_SIMULADORES);
     }
